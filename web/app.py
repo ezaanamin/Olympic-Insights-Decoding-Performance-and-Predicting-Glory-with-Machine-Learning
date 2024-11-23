@@ -17,8 +17,16 @@ user_menu=st.sidebar.radio(
 
 if user_menu=="Medal Tally":
     st.header("Medal Tally")
-    year,country=helper.country_year_list(df)
+    country,year=helper.country_year_list(df)
     selected_year=st.sidebar.selectbox("Select years",year)
-    selected_year=st.sidebar.selectbox("Select country",country)
-    medal_tally=helper.metal_tally(df)
-    st.dataframe(medal_tally)
+    selected_country=st.sidebar.selectbox("Select country",country)
+    medal_tally=helper.fetch_Medal_Tally(df,selected_country,selected_year)
+    if selected_country=="Overall" and selected_year=="Overall":
+        st.title("Overall Tally")
+    if selected_country!="Overall" and selected_year=="Overall":
+        st.title(str(selected_country) + "Overall Tally")
+    if selected_country!="Overall" and selected_year!="Overall":
+        st.title(str(selected_country)+"overall tally in"+str(selected_year))
+    if selected_country=="Overall" and selected_year!="Overall":
+        st.title("Overall Tally in "+str(year))
+    st.table(medal_tally)
