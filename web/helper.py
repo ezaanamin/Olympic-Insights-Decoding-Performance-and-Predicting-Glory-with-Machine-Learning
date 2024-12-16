@@ -40,3 +40,7 @@ def fetch_Medal_Tally(df,country,year):
 
 
     return x
+def participating_nations_over_time(df):
+    nations_over_time = df.drop_duplicates(['Year', 'region'])['Year'].value_counts().reset_index().sort_values('count')
+    nations_over_time.rename(columns={'count':'Editions','Year':'no of countries'},inplace=True)
+    return nations_over_time 
