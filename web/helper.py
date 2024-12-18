@@ -44,3 +44,19 @@ def participating_nations_over_time(df):
     nations_over_time = df.drop_duplicates(['Year', 'region'])['Year'].value_counts().reset_index().sort_values('count')
     nations_over_time.rename(columns={'count':'Editions','Year':'no of countries'},inplace=True)
     return nations_over_time 
+
+
+def most_sucessful(df,sport):
+    temp_df=df.dropna(subset=['Medal'])
+    if sport!='Overall':
+        temp_df=temp_df[temp_df['Sport']==sport]
+    x = (
+        temp_df['Name']
+        .value_counts()
+        .reset_index()
+        .head(15)
+        .assign(count=lambda df_: df_['Name'].astype(str)) 
+        .merge(df, left_on='count', right_on='Name', how='left')[['count', 'Name_x', 'Sport', 'region']]
+        .drop_duplicates('count')
+    )
+    return x

@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import preprocessing,helper
 import plotly.express as px
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 
 df=pd.read_csv("/home/ezaan-amin/Documents/PortFolio/Olympic Insights_Decoding Performance and Predicting Glory with Machine Learning/Model/DataSet/athlete_events.csv")
 region_df=pd.read_csv("/home/ezaan-amin/Documents/PortFolio/Olympic Insights_Decoding Performance and Predicting Glory with Machine Learning/Model/DataSet/noc_regions.csv")
@@ -64,4 +67,19 @@ if user_menu=='Overall Analysis':
     nations_over_time=helper.participating_nations_over_time(df)
     fig=px.line(nations_over_time,x='Editions',y='no of countries')
     st.plotly_chart(fig)
+    
+    st.title("No of Events over time (Every Sport)")
+    fig, ax = plt.subplots(figsize=(20, 20))
+    x=df.drop_duplicates(['Year','Sport','Event'])
+    ax=sns.heatmap(x.pivot_table(index='Sport',columns='Year',values='Event',aggfunc='count').fillna(0).astype(int),annot=True)
+    st.pyplot(fig)
+    st.title('Most Sucessfully Athletes')
+    sport_list=df['Sport'].unique().tolist()
+    sport_list.sort()
+    sport_list.insert(0,'Overall')
+    selected_sport=st.selectbox("Select a sport",sport_list)
+    x=helper.most_sucessful(df,selected_sport)
+    st.table(x)
+
+
 
