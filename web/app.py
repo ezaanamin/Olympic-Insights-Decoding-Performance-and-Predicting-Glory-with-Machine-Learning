@@ -4,8 +4,7 @@ import preprocessing,helper
 import plotly.express as px
 import seaborn as sns
 import matplotlib.pyplot as plt
-
-
+import plotly.figure_factory as ff
 df=pd.read_csv("/home/ezaan-amin/Documents/PortFolio/Olympic Insights_Decoding Performance and Predicting Glory with Machine Learning/Model/DataSet/athlete_events.csv")
 region_df=pd.read_csv("/home/ezaan-amin/Documents/PortFolio/Olympic Insights_Decoding Performance and Predicting Glory with Machine Learning/Model/DataSet/noc_regions.csv")
 
@@ -80,6 +79,35 @@ if user_menu=='Overall Analysis':
     selected_sport=st.selectbox("Select a sport",sport_list)
     x=helper.most_sucessful(df,selected_sport)
     st.table(x)
+
+if user_menu=='Country wise Analysis':
+    st.sidebar.title("Country wise Analysis")
+    country_list=df['region'].unique().astype(str).tolist()
+    country_list.sort()
+    country_list_selected=st.sidebar.selectbox("Select a country",country_list)
+    country_df=helper.yearwise_sucessful(df,country_list_selected)
+    fig=px.line(country_df,x='Year',y='Medal')
+    st.title(country_list_selected+"  medal over the years")
+    st.plotly_chart(fig)
+    pt=helper.country_event_heatmap(df,country_list_selected)
+    fig, ax = plt.subplots(figsize=(20, 20))
+    ax=sns.heatmap(pt,annot=True)
+    st.title(country_list_selected+" excels in the following sports")
+
+    st.pyplot(fig)
+    st.title("Top 10 athletes of " + country_list_selected)
+    top_10_df=helper.most_sucessful_countrywise(df,country_list_selected)
+    st.table(top_10_df)
+
+if user_menu=='Athlete wise Analysis':
+    athletes_df=df.drop_duplicates(subset=['Name','region'])
+    x1=athletes_df['Age'].dropna()
+    x2=athletes_df[athletes_df['Medal']=="Gold"]['Age'].dropna()
+    x3=athletes_df[athletes_df['Medal']=="Silver"]['Age'].dropna()
+    x4=athletes_df[athletes_df['Medal']=="Bronze"]['Age'].dropna()
+    fig=ff.create_distplot([x1,x2,x3,x4],['Overall_Age','Gold_medalist','Silver_Medalist','Bronze_Medalist'],show_hist=False,show_rug=False)
+    st.plotly_chart(fig)
+
 
 
 
