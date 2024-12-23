@@ -106,7 +106,46 @@ if user_menu=='Athlete wise Analysis':
     x3=athletes_df[athletes_df['Medal']=="Silver"]['Age'].dropna()
     x4=athletes_df[athletes_df['Medal']=="Bronze"]['Age'].dropna()
     fig=ff.create_distplot([x1,x2,x3,x4],['Overall_Age','Gold_medalist','Silver_Medalist','Bronze_Medalist'],show_hist=False,show_rug=False)
+    st.title("Distribution of Age")
+    fig.update_layout(autosize=False,width=1000,height=600)
     st.plotly_chart(fig)
+    x = []
+    name = []
+    famous_sports = ['Basketball', 'Judo', 'Football', 'Tug-Of-War', 'Athletics',
+                     'Swimming', 'Badminton', 'Sailing', 'Gymnastics',
+                     'Art Competitions', 'Handball', 'Weightlifting', 'Wrestling',
+                     'Water Polo', 'Hockey', 'Rowing', 'Fencing',
+                     'Shooting', 'Boxing', 'Taekwondo', 'Cycling', 'Diving', 'Canoeing',
+                     'Tennis', 'Golf', 'Softball', 'Archery',
+                     'Volleyball', 'Synchronized Swimming', 'Table Tennis', 'Baseball',
+                     'Rhythmic Gymnastics', 'Rugby Sevens',
+                     'Beach Volleyball', 'Triathlon', 'Rugby', 'Polo', 'Ice Hockey']
+    for sport in famous_sports:
+        temp_df = athletes_df[athletes_df['Sport'] == sport]
+        x.append(temp_df[temp_df['Medal'] == 'Gold']['Age'].dropna())
+        name.append(sport)
+
+    fig = ff.create_distplot(x, name, show_hist=False, show_rug=False)
+    fig.update_layout(autosize=False, width=1000, height=600)
+    st.title("Distribution of Age wrt Sports(Gold Medalist)")
+    st.plotly_chart(fig)
+    sport_list = df['Sport'].unique().tolist()
+    sport_list.sort()
+    sport_list.insert(0, 'Overall')
+
+    st.title('Height Vs Weight')
+    selected_sport = st.selectbox('Select a Sport', sport_list)
+    temp_df = helper.weight_v_height(df,selected_sport)
+    fig,ax = plt.subplots()
+    ax = sns.scatterplot(
+    x='Weight', 
+    y='Height', 
+    hue='Medal', 
+    style='Sex', 
+    s=60, 
+    data=temp_df
+)
+    st.pyplot(fig)
 
 
 

@@ -90,3 +90,12 @@ def most_sucessful_countrywise(df,country):
         .drop_duplicates('count')
     )
     return x
+
+def weight_v_height(df,sport):
+    athlete_df=df.drop_duplicates(subset=['Name','region'])
+    athlete_df['Medal'].fillna("No Medal",inplace=True)
+    if sport!='Overall':
+        temp_df=athlete_df[athlete_df['Sport']==sport]
+        return temp_df
+    else:
+        return athlete_df
